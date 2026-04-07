@@ -9,6 +9,7 @@ import (
 func MakeRefreshToken() string {
 	key := make([]byte, 32)
 	_, err := rand.Read(key)
+
 	if err != nil {
 		log.Fatal("rand.Read gave an error: %s", err)
 	}
