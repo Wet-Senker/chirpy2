@@ -22,21 +22,26 @@ type Chirp struct {
 
 func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Body   string    `json:"body"`
+		Body string `json:"body"`
+	}
+
+	token, err := auth.GetBearerToken(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+		return
+	}
+	userID, err := auth.ValidateJWT(token, cfg.jwtSecret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+		return
 	}
 
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
-	err := decoder.Decode(&params)
+	err = decoder.Decode(&params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
-	}
-
-	token, err := auth.GetBearerToken(r.Header)
-	userID, err := auth.ValidateJWT(token, cfg.tokenSecret)
-	if err != nil {
-		respondWithError(w, http.StatusUnauthorized, "Couldn't validate token", err)
 	}
 
 	cleaned, err := validateChirp(params.Body)

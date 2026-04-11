@@ -3,11 +3,11 @@ package main
 import "net/http"
 
 func (cfg *apiConfig) handlerReset(w http.ResponseWriter, r *http.Request) {
-	if cfg.platform != "dev"{
+	if cfg.platform != "dev" {
 		w.WriteHeader(http.StatusForbidden)
-		return 
+		return
 	}
-	
+
 	err := cfg.db.DeleteUsers(r.Context())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't delete user", err)
