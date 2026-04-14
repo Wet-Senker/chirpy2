@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-
 	"github.com/google/uuid"
 )
 
@@ -35,6 +34,8 @@ func (cfg *apiConfig) handlerChirpsRetrieve(w http.ResponseWriter, r *http.Reque
 		respondWithError(w, http.StatusInternalServerError, "Couldn't retrieve chirps", err)
 		return
 	}
+
+	authorID := r.URL.Query().Get("author_id")
 
 	chirps := []Chirp{}
 	for _, dbChirp := range dbChirps {
