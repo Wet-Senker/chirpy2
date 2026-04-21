@@ -8,7 +8,6 @@ import (
 	"github.com/wet-senker/chirpy2/internal/database"
 )
 
-
 func (cfg *apiConfig) handlerUpdateEmail(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Email    string `json:"email"`
@@ -45,13 +44,12 @@ func (cfg *apiConfig) handlerUpdateEmail(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-
-	user, err := cfg.db.UpdateEmailPassword(r.Context(),	
-	database.UpdateEmailPasswordParams{
-		Email: params.Email,
-		HashedPassword: hashedPassword,
-		ID: userID,
-})
+	user, err := cfg.db.UpdateEmailPassword(r.Context(),
+		database.UpdateEmailPasswordParams{
+			Email:          params.Email,
+			HashedPassword: hashedPassword,
+			ID:             userID,
+		})
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't update password/email", err)
@@ -64,6 +62,7 @@ func (cfg *apiConfig) handlerUpdateEmail(w http.ResponseWriter, r *http.Request)
 			CreatedAt: user.CreatedAt,
 			UpdatedAt: user.UpdatedAt,
 			Email:     user.Email,
+			IsChirpy:  user.IsChirpy,
 		},
-})
+	})
 }
